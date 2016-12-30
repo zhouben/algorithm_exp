@@ -2,3 +2,4 @@
 
 1. Fibonacci (matrix implement). app/fibonacci
 1. A\* search path. app/astar
+1. Dijkstra algorithm. src/dijkstra.py

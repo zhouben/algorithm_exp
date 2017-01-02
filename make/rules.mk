@@ -28,10 +28,7 @@ $(EXE_FILE) : $(OBJS)
 $(OBJDIR)/$(PROJECT)/%.o:: %.c
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-$(OBJDIR)/%.o:: $(SRCDIR)/%.c
-	@$(CC) $(CFLAGS)  -c -o $@ $<
-
-$(OBJDIR)/%.o:: $(TESTSDIR)/%.c
+$(OBJDIR)/%.o: %.c
 	@$(CC) $(CFLAGS)  -c -o $@ $<
 
 CLEAN_FILES = $(OBJDIR)

@@ -6,6 +6,10 @@ LN = ln -sf
 SRCDIR = $(TOPDIR)/src
 TESTSDIR = $(TOPDIR)/tests
 
+VPATH =
+VPATH += $(SRCDIR)
+VPATH += $(TESTSDIR)
+
 INCPATHS =
 
 include $(TOPDIR)/make/files.mk

@@ -44,7 +44,7 @@ void dump(POINT* map, int width, int height)
             case PATH   : str = "+"; break;
             default: break;
             }
-            printf(str);
+            printf("%s", str);
             p++;
         }
         printf("\n");

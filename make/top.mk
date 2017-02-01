@@ -5,6 +5,9 @@ LN = ln -sf
 
 SRCDIR = $(TOPDIR)/src
 TESTSDIR = $(TOPDIR)/tests
+BINDIR = $(TOPDIR)/bin
+OBJDIR = $(TOPDIR)/obj
+EXE_FILE = $(BINDIR)/$(PROJECT)
 
 VPATH =
 VPATH += $(SRCDIR)

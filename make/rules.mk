@@ -1,7 +1,4 @@
-BINDIR = $(TOPDIR)/bin
-OBJDIR = $(TOPDIR)/obj
 OBJLINK = objlink
-EXE_FILE = $(BINDIR)/$(PROJECT)
 
 .PHONY : all
 all: $(OBJLINK) $(EXE_FILE)
@@ -12,7 +9,20 @@ OBJS = $(MODULE_CFILES:%.c=$(OBJDIR)/%.o)
 OBJS += $(LOCAL_CFILES:%.c=$(OBJDIR)/$(PROJECT)/%.o)
 OBJS += $(TEST_CFILES:%.c=$(OBJDIR)/%.o)
 
+-include $(OBJS:.o=.d)
+
 CFLAGS += $(INCPATHS)
+
+define GENERATE_DEP
+@- test -d $(@D) || $(MKDIR) -p $(@D)
+@$(CC) -MM $(CFLAGS) $< | sed 's#\w\+\.o#$(@:.d=.o)#' > $@
+endef
+
+$(OBJDIR)/$(PROJECT)/%.d: %.c
+	$(GENERATE_DEP)
+
+$(OBJDIR)/%.d: %.c
+	$(GENERATE_DEP)
 
 .PHONY : $(OBJLINK)
 $(OBJLINK):
@@ -25,11 +35,16 @@ $(EXE_FILE) : $(OBJS)
 	@$(CC) -o $@ $^
 	@$(LN) $@ $(PROJECT)
 
+define COMPILE_C
+@echo compile $@  $^
+@$(CC) $(CFLAGS)  -c -o $@ $<
+endef
+
 $(OBJDIR)/$(PROJECT)/%.o:: %.c
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	$(COMPILE_C)
 
 $(OBJDIR)/%.o: %.c
-	@$(CC) $(CFLAGS)  -c -o $@ $<
+	$(COMPILE_C)
 
 CLEAN_FILES = $(OBJDIR)
 CLEAN_FILES += $(BINDIR)
@@ -40,6 +55,3 @@ CLEAN_FILES += $(EXE_FILE)
 clean:
 	@echo [CLEAN]
 	@$(RM) $(CLEAN_FILES)
-	
-FORCE:
-	@ture

@@ -8,8 +8,7 @@ SUBDIRS := $(filter-out $(DISABLED_APPS), $(SUBDIRS))
 
 .PHONY : all $(SUBDIRS) clean
 all : $(SUBDIRS)
-	@echo to compile all subdirectories
-	@echo $(SUBDIRS)
+	@echo compile all subdirectories: $(SUBDIRS)
 
 $(SUBDIRS):
 	@+$(MAKE) -C $@

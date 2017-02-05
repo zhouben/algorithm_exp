@@ -4,7 +4,7 @@ PIT_TARGETS = pit
 .PHONY : all pit
 all: | $(OBJLINK)
 
-ifneq ($(PROJECT),)
+ifdef PROJECT
 all: $(BINDIR)/$(PROJECT)
 endif
 
@@ -14,7 +14,7 @@ $(SUBDIRS): FORCE
 	@+$(MAKE) -C $@
 
 $(PIT_TARGETS): all $(foreach dir,$(SUBDIRS),$(PIT_TARGETS)-$(dir))
-	@(test -n '$(PROJECT)' && (echo to run $(PROJECT) ; ./$(PROJECT))) || (echo "this's top dir" && /bin/true)
+	@(test -z '$(PROJECT)' || (echo to run $(PROJECT)... ; ./$(PROJECT)))
 
 $(PIT_TARGETS)-%: all
 	@echo to run subdir pit

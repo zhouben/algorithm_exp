@@ -1,9 +1,25 @@
 OBJLINK = objlink
+PIT_TARGETS = pit
 
-.PHONY : all
-all: $(OBJLINK) $(EXE_FILE)
-pit: $(OBJLINK) $(EXE_FILE)
-	@$(EXE_FILE)
+.PHONY : all pit
+all: | $(OBJLINK)
+
+ifdef PROJECT
+all: $(BINDIR)/$(PROJECT)
+endif
+
+all: $(SUBDIRS)
+
+$(SUBDIRS): FORCE
+	@+$(MAKE) -C $@
+
+$(PIT_TARGETS): all $(foreach dir,$(SUBDIRS),$(PIT_TARGETS)-$(dir))
+	@(test -z '$(PROJECT)' || (echo to run $(PROJECT)... ; ./$(PROJECT)))
+
+$(PIT_TARGETS)-%: all
+	@echo to run subdir pit
+	@$(MAKE) -C $(subst $(PIT_TARGETS)-,,$@) $(PIT_TARGETS)
+
 
 OBJS = $(MODULE_CFILES:%.c=$(OBJDIR)/%.o)
 OBJS += $(LOCAL_CFILES:%.c=$(OBJDIR)/$(PROJECT)/%.o)
@@ -30,7 +46,8 @@ $(OBJLINK):
 	@$(MKDIR) $(OBJDIR)
 	@$(MKDIR) $(OBJDIR)/$(PROJECT)
 
-$(EXE_FILE) : $(OBJS)
+$(BINDIR)/$(PROJECT) : $(OBJS)
+	@echo "curr path: $(shell basename `pwd`)"
 	@echo "CC $@"
 	@$(CC) -o $@ $^
 	@$(LN) $@ $(PROJECT)
@@ -49,7 +66,10 @@ $(OBJDIR)/%.o: %.c
 CLEAN_FILES = $(OBJDIR)
 CLEAN_FILES += $(BINDIR)
 CLEAN_FILES += $(PROJECT)
-CLEAN_FILES += $(EXE_FILE)
+
+.PHONY: FORCE
+FORCE:
+	@/bin/true
 
 .PHONY: clean
 clean:
